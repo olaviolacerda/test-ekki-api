@@ -1,10 +1,10 @@
-
+const SequelizeTokenify = require('sequelize-tokenify');
 
 module.exports = (sequelize, DataTypes) => {
   const Account = sequelize.define('Account', {
     identifier: {
       type: DataTypes.STRING,
-      allowNull: false,
+      unique: true,
     },
     balance: {
       type: DataTypes.BIGINT,
@@ -14,8 +14,13 @@ module.exports = (sequelize, DataTypes) => {
     limit: {
       type: DataTypes.BIGINT,
       allowNull: false,
-      defaultValue: 1000,
+      defaultValue: 500,
     },
+  });
+
+  SequelizeTokenify.tokenify(Account, {
+    field: 'identifier',
+    charset: 'numeric',
   });
 
   Account.associate = (models) => {

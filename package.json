@@ -13,7 +13,8 @@
     "pg": "^7.11.0",
     "pg-hstore": "^2.3.3",
     "sequelize": "^5.8.10",
-    "sequelize-cli": "^5.5.0"
+    "sequelize-cli": "^5.5.0",
+    "sequelize-tokenify": "^0.2.1"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
