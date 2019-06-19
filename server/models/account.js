@@ -16,7 +16,16 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 500,
     },
-  }, {});
+  }, {
+    getterMethods: {
+      fullBalance() {
+        return this.balance + this.limit;
+      },
+      getBalance() {
+        return this.balance;
+      },
+    },
+  });
 
   SequelizeTokenify.tokenify(Account, {
     field: 'identifier',
@@ -41,6 +50,7 @@ module.exports = (sequelize, DataTypes) => {
       through: 'Transaction',
     });
   };
+
 
   return Account;
 };

@@ -1,6 +1,7 @@
 const usersController = require('../controllers').users;
 const accountsController = require('../controllers').accounts;
 const contactsController = require('../controllers').contacts;
+const transactionsController = require('../controllers').transactions;
 
 module.exports = (app) => {
   // Users
@@ -9,9 +10,14 @@ module.exports = (app) => {
   app.post('/api/users', usersController.create);
   // Accounts
   app.get('/api/accounts', accountsController.list);
+  app.get('/api/accounts/transactions/:accountId', accountsController.extract);
   // Contacts
   app.post('/api/contacts', contactsController.create);
-  app.get('/api/contacts/:id', contactsController.list);
+  app.get('/api/contacts/:userId', contactsController.list);
+  // Transactions
+  app.post('/api/transactions', transactionsController.transfer);
+  // app.get('/api/transactions', transactionsController.list);
+
 
   // Not Found
   app.get('*', (req, res) => res.status(404).send({

@@ -8,15 +8,19 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: 'Nome é obrigatório',
+          msg: 'Nome de usuário não pode ser vazio.',
         },
       },
     },
     cpf: {
-      type: DataTypes.STRING(11),
+      type: DataTypes.STRING,
       allowNull: false,
       unique: true,
       validate: {
+        rightLenght(value, next) {
+          if (value.length !== 11) return next('CPF inválido. Revise o número de digitos.');
+          next();
+        },
         notEmpty: {
           msg: 'CPF é obrigatório',
         },
@@ -25,10 +29,10 @@ module.exports = (sequelize, DataTypes) => {
             where: sequelize.and({ cpf: value }),
           })
             // eslint-disable-next-line prefer-arrow-callback
-            .done(function (error, user) {
-              if (error) { return next(error); }
-
+            .done(function (user, error) {
               if (user) { return next('CPF já está em uso!'); }
+
+              if (error) { return next(error); }
 
               next();
             });
@@ -40,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: 'Telefone é obrigatório',
+          msg: 'Telefone não pode ser vazio.',
         },
       },
     },

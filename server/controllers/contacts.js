@@ -11,7 +11,7 @@ module.exports = {
 
   list(req, res) {
     return Contact
-      .findAll({ where: { relatingUserId: req.params.id } })
+      .findAll({ where: { relatingUserId: req.params.userId } })
       .then(contacts => res.status(200).send(contacts))
       .catch(error => res.status(400).send(error));
   },
