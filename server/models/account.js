@@ -28,6 +28,18 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
     });
+
+    Account.belongsToMany(Account, {
+      foreignKey: 'sourceAccountId',
+      as: 'source',
+      through: 'Transaction',
+    });
+
+    Account.belongsToMany(Account, {
+      foreignKey: 'targetAccountId',
+      as: 'target',
+      through: 'Transaction',
+    });
   };
 
   return Account;
