@@ -6,7 +6,7 @@ module.exports = {
       .create(req.body)
       .then((user) => {
         Account.create({ userId: user.id });
-        res.status(201).send(user);
+        res.status(200).send(user);
       })
       .catch(error => res.status(400).send(error));
   },
@@ -15,6 +15,13 @@ module.exports = {
     return User
       .findAll()
       .then(users => res.status(200).send(users))
+      .catch(error => res.status(400).send(error));
+  },
+
+  show(req, res) {
+    return User
+      .show(req.params.id)
+      .then(user => res.status(200).send(user))
       .catch(error => res.status(400).send(error));
   },
 };

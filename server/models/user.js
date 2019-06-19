@@ -1,7 +1,6 @@
 /* eslint-disable func-names */
 /* eslint-disable consistent-return */
 
-
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     name: {
@@ -53,6 +52,11 @@ module.exports = (sequelize, DataTypes) => {
       as: 'account',
     });
   };
+
+  User.show = id => User.findOne({
+    where: { id },
+    include: 'account',
+  });
 
   return User;
 };
