@@ -44,18 +44,30 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     },
-  });
+  }, {});
 
   User.associate = (models) => {
     User.hasOne(models.Account, {
       foreignKey: 'userId',
       as: 'account',
     });
+
+    User.belongsToMany(User, {
+      foreignKey: 'relatingUserId',
+      as: 'relating',
+      through: 'Contact',
+    });
+
+    User.belongsToMany(User, {
+      foreignKey: 'relatedUserId',
+      as: 'related',
+      through: 'Contact',
+    });
   };
 
   User.show = id => User.findOne({
     where: { id },
-    include: 'account',
+    include: ['account', 'relating'],
   });
 
   return User;

@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 500,
     },
-  });
+  }, {});
 
   SequelizeTokenify.tokenify(Account, {
     field: 'identifier',
