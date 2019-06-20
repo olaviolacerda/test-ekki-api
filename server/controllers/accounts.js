@@ -21,7 +21,9 @@ module.exports = {
         if (transactions.length === 0) {
           extract = { message: 'Nenhuma transferência encontrada na conta solicitada' };
         } else {
+          console.log(transactions[0]);
           extract = transactions.map(transaction => Object.assign({}, {
+            id: transaction.transactionId,
             amount: transaction.amount,
             date: transaction.createdAt,
             sourceAccount: transaction.source.accountNumber,

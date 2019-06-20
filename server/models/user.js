@@ -69,6 +69,7 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
+
   User.userInfo = id => User.findOne({
     where: { id },
     include: ['account'],

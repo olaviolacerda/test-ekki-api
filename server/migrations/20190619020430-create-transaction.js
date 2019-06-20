@@ -8,6 +8,10 @@ module.exports = {
       primaryKey: true,
       type: Sequelize.INTEGER,
     },
+    transactionId: {
+      type: Sequelize.STRING,
+      unique: true,
+    },
     amount: {
       type: Sequelize.BIGINT,
     },
