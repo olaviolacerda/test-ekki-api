@@ -8,7 +8,7 @@ module.exports = {
         Account.create({ userId: user.id });
         res.status(200).send(user);
       })
-      .catch(error => res.status(400).send(error));
+      .catch(error => res.status(400).send(error.errors));
   },
 
   list(req, res) {

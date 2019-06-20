@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   Contact.associate = (models) => {
     Contact.belongsTo(models.User, {
       foreignKey: 'relatingUserId',
-      as: 'relating',
+      as: 'contacts',
       onDelete: 'CASCADE',
     });
 
@@ -15,6 +15,17 @@ module.exports = (sequelize, DataTypes) => {
       as: 'related',
       onDelete: 'CASCADE',
     });
+  };
+
+  Contact.addContact = async (params) => {
+    const { relatingUserId, relatedUserId, nickname } = params;
+    const oldContact = await Contact.findOne({ where: { relatingUserId, relatedUserId } });
+
+    if (oldContact) {
+      return oldContact.update({ nickname });
+    }
+
+    return Contact.create(params);
   };
 
   return Contact;

@@ -58,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
 
     User.belongsToMany(User, {
       foreignKey: 'relatingUserId',
-      as: 'relating',
+      as: 'contacts',
       through: 'Contact',
     });
 
@@ -69,9 +69,9 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
-  User.show = id => User.findOne({
+  User.show = async id => User.findOne({
     where: { id },
-    include: ['account', 'relating'],
+    include: ['account', 'contacts'],
   });
 
   return User;

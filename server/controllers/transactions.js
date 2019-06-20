@@ -11,7 +11,7 @@ module.exports = {
       const actualTime = new Date().getTime();
 
       if (actualTime - pastTransactionDate < 120000) {
-        pastTransaction.destroy({ where: { createdAt: pastTransaction.createdAt } });
+        Transaction.destroy({ where: { createdAt: pastTransaction.createdAt } });
         newTransaction = await Transaction
           .registerTransaction(req.body);
       } else {

@@ -13,7 +13,9 @@ module.exports = (app) => {
   app.get('/api/accounts/transactions/:accountId', accountsController.extract);
   // Contacts
   app.post('/api/contacts', contactsController.create);
+  app.put('/api/contacts/:contactId', contactsController.update);
   app.get('/api/contacts/:userId', contactsController.list);
+  app.delete('/api/contacts/:contactId', contactsController.destroy);
   // Transactions
   app.post('/api/transactions', transactionsController.transfer);
   // app.get('/api/transactions', transactionsController.list);
