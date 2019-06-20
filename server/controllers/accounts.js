@@ -17,12 +17,20 @@ module.exports = {
         },
         include: ['source', 'target'],
       }).then((transactions) => {
-        let extract = transactions;
-        if (extract.length === 0) {
+        let extract;
+        if (transactions.length === 0) {
           extract = { message: 'Nenhuma transferência encontrada na conta solicitada' };
+        } else {
+          extract = transactions.map(transaction => Object.assign({}, {
+            amount: transaction.amount,
+            date: transaction.createdAt,
+            sourceAccount: transaction.source.accountNumber,
+            targetAccount: transaction.target.accountNumber,
+            sourceContact: transaction.source.userId,
+            targetContact: transaction.target.userId,
+          }));
         }
-
-        return res.status(200).json(extract);
+        res.status(200).json(extract);
       })
       .catch(error => res.status(400).json(error));
   },

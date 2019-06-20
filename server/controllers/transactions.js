@@ -11,13 +11,12 @@ module.exports = {
       const actualTime = new Date().getTime();
 
       if (actualTime - pastTransactionDate < 120000) {
-        await models.Transaction.destroy({ where: { createdAt: pastTransaction.createdAt } });
-
-        await models.Transaction
-          .registerTransaction(req.body)
+        await models.Transaction.destroy({ where: { createdAt: pastTransaction.createdAt } })
           .then(() => {
-            res.status(200).json({ message: 'Atenção: Você está tentando realizar uma transferência duplicada.' });
-          }).catch(error => res.status(400).json(error));
+            models.Transaction.registerTransaction(req.body).then((transaction) => {
+              res.status(200).json({ transaction, message: 'Transferência duplicada, iremos manter somente a última.' });
+            });
+          });
       } else {
         await createTransfer(models, req, res);
       }
