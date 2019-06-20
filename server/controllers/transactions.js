@@ -16,8 +16,8 @@ module.exports = {
         await models.Transaction
           .registerTransaction(req.body)
           .then(() => {
-            res.status(200).send({ message: 'Atenção: Você está tentando realizar uma transferência duplicada.' });
-          }).catch(error => res.status(400).send(error));
+            res.status(200).json({ message: 'Atenção: Você está tentando realizar uma transferência duplicada.' });
+          }).catch(error => res.status(400).json(error));
       } else {
         await createTransfer(models, req, res);
       }

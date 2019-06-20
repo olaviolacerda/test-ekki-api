@@ -8,20 +8,20 @@ module.exports = {
         Account.create({ userId: user.id });
         res.status(200).json({ user, message: 'User criado' });
       })
-      .catch(error => res.status(400).send(error.errors));
+      .catch(error => res.status(400).json(error.errors));
   },
 
   list(req, res) {
     return User
       .findAll()
-      .then(users => res.status(200).send(users))
-      .catch(error => res.status(400).send(error));
+      .then(users => res.status(200).json(users))
+      .catch(error => res.status(400).json(error));
   },
 
   login(req, res) {
     return User.findOne({ where: { cpf: req.body.cpf } })
-      .then(user => res.status(200).send(user))
-      .catch(error => res.status(400).send(error));
+      .then(user => res.status(200).json(user))
+      .catch(error => res.status(400).json(error));
   },
 
   userInfo(req, res) {
@@ -44,9 +44,9 @@ module.exports = {
             },
           )),
         });
-        res.status(200).send(userObj);
+        res.status(200).json(userObj);
       })
-      .catch(error => res.status(400).send(error));
+      .catch(error => res.status(400).json(error));
   },
 
 };

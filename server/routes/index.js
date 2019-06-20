@@ -21,7 +21,7 @@ module.exports = (app) => {
 
 
   // Not Found
-  app.get('*', (req, res) => res.status(404).send({
+  app.get('*', (req, res) => res.status(404).json({
     message: 'Oops...',
   }));
 };

@@ -4,15 +4,15 @@ module.exports = {
   create(req, res) {
     return Contact
       .addContact(req.body)
-      .then(contact => res.status(200).send(contact))
-      .catch(error => res.status(400).send(error));
+      .then(contact => res.status(200).json(contact))
+      .catch(error => res.status(400).json(error));
   },
 
   list(req, res) {
     return Contact
       .findAll({ where: { relatingUserId: req.params.userId } })
-      .then(contacts => res.status(200).send(contacts))
-      .catch(error => res.status(400).send(error));
+      .then(contacts => res.status(200).json(contacts))
+      .catch(error => res.status(400).json(error));
   },
 
   update(req, res) {
@@ -26,7 +26,7 @@ module.exports = {
       })
       .then((contact) => {
         if (!contact) {
-          return res.status(404).send({
+          return res.status(404).json({
             message: 'Contato não encontrado.',
           });
         }
@@ -34,10 +34,10 @@ module.exports = {
           .update({
             nickname: req.body.nickname || contact.nickname,
           })
-          .then(() => res.status(200).send(contact))
-          .catch(error => res.status(400).send(error));
+          .then(() => res.status(200).json(contact))
+          .catch(error => res.status(400).json(error));
       })
-      .catch(error => res.status(400).send(error));
+      .catch(error => res.status(400).json(error));
   },
 
 
@@ -46,16 +46,16 @@ module.exports = {
       .findOne({ where: { id: req.params.contactId } })
       .then((contact) => {
         if (!contact) {
-          return res.status(404).send({
+          return res.status(404).json({
             message: 'Contato não encontrado.',
           });
         }
         return contact
           .destroy()
-          .then(() => res.status(200).send(contact))
-          .catch(error => res.status(400).send(error));
+          .then(() => res.status(200).json(contact))
+          .catch(error => res.status(400).json(error));
       })
-      .catch(error => res.status(400).send(error));
+      .catch(error => res.status(400).json(error));
   },
 
 };

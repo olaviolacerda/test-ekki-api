@@ -18,7 +18,7 @@ const createTransfer = async function (models, req, res) {
               );
             });
         });
-    }).catch(error => res.status(400).send(error));
+    }).catch(error => res.status(400).json(error));
 };
 
 module.exports = {
