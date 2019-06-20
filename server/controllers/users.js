@@ -28,14 +28,7 @@ module.exports = {
     return User
       .userInfo(req.params.id)
       .then(async (user) => {
-        const userObj = Object.assign({}, {
-          id: user.id,
-          name: user.name,
-          cpf: user.cpf,
-          phone: user.phone,
-          account: user.account,
-        });
-        res.status(200).json(userObj);
+        res.status(200).json(user);
       })
       .catch(error => res.status(400).json({ error, message: 'Usuário não encontrado.' }));
   },

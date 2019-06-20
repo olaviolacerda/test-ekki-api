@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const { Transaction } = require('../models');
+const { Transaction, Account } = require('../models');
 
 
 module.exports = {
@@ -15,22 +15,18 @@ module.exports = {
             },
           ],
         },
-        include: ['source', 'target'],
+        attributes: ['transactionId', 'amount', 'createdAt'],
+        include: [{
+          model: Account,
+          as: 'target',
+          attributes: ['accountNumber', 'userId'],
+        }],
       }).then((transactions) => {
         let extract;
         if (transactions.length === 0) {
           extract = { message: 'Nenhuma transferência encontrada na conta solicitada' };
         } else {
-          console.log(transactions[0]);
-          extract = transactions.map(transaction => Object.assign({}, {
-            id: transaction.transactionId,
-            amount: transaction.amount,
-            date: transaction.createdAt,
-            sourceAccount: transaction.source.accountNumber,
-            targetAccount: transaction.target.accountNumber,
-            sourceContact: transaction.source.userId,
-            targetContact: transaction.target.userId,
-          }));
+          extract = transactions.map(transaction => transaction.getValues());
         }
         res.status(200).json(extract);
       })

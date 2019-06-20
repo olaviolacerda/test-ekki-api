@@ -14,7 +14,7 @@ module.exports = (app) => {
   // Contacts
   app.post('/api/contacts', contactsController.create);
   app.get('/api/contacts/:userId', contactsController.userContacts);
-  app.put('/api/contacts', contactsController.update);
+  app.put('/api/contacts/:contactId', contactsController.update);
   app.delete('/api/contacts/:contactId', contactsController.destroy);
   // Transactions
   app.post('/api/transactions', transactionsController.transfer);
