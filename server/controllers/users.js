@@ -6,7 +6,7 @@ module.exports = {
       .create(req.body)
       .then((user) => {
         Account.create({ userId: user.id });
-        res.status(200).send(user);
+        res.status(200).json({ user, message: 'User criado' });
       })
       .catch(error => res.status(400).send(error.errors));
   },
@@ -28,11 +28,6 @@ module.exports = {
     return User
       .userInfo(req.params.id)
       .then(async (user) => {
-        await Account.findOne({ where: { id: user.account.id } }).then((account) => {
-          console.log('a', account.balance);
-          account.deposit(50).then(resa => console.log('resa', resa)).catch(err => console.log(err));
-          console.log('c', account.balance);
-        });
         const userObj = Object.assign({}, {
           id: user.id,
           name: user.name,

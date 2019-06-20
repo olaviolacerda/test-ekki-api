@@ -18,7 +18,6 @@ module.exports = (app) => {
   app.delete('/api/contacts/:contactId', contactsController.destroy);
   // Transactions
   app.post('/api/transactions', transactionsController.transfer);
-  // app.get('/api/transactions', transactionsController.list);
 
 
   // Not Found

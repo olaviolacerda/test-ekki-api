@@ -48,15 +48,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     },
-  }, {
-    scopes: {
-      withAccount() {
-        return {
-          include: sequelize.models.UserCategory,
-        };
-      },
-    },
-  });
+  }, {});
 
   User.associate = (models) => {
     User.hasOne(models.Account, {

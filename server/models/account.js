@@ -48,16 +48,23 @@ module.exports = (sequelize, DataTypes) => {
     this.update({ balance: newBalance });
   };
 
+
   Account.prototype.withdraw = function (amount) {
     const balance = Number(this.balance);
     const limit = Number(this.limit);
     const totalBalance = balance + limit;
 
-    if (balance > amount) {
+    let response = { status: false, account: this, message: 'Saldo insuficiente.' };
+
+    if (amount < balance) {
       this.update({ balance: balance - amount });
-    } else if (totalBalance > amount) {
+      response = { status: true, account: this, message: 'Transferência realizada.' };
+    } else if (amount < totalBalance) {
       this.update({ balance: 0, limit: totalBalance - amount });
+      response = { status: true, account: this, message: 'Transferência realizada.' };
     }
+
+    return response;
   };
 
 

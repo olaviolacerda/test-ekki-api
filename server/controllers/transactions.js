@@ -1,33 +1,28 @@
-const { Transaction, Account } = require('../models');
+const models = require('../models');
+const { createTransfer } = require('../services/transactionService');
+
 
 module.exports = {
   async transfer(req, res) {
-    let newTransaction;
-
-    const pastTransaction = await Transaction.findOne({ where: req.body, limit: 1, order: [['createdAt', 'DESC']] });
+    const pastTransaction = await models.Transaction.findOne({ where: req.body, limit: 1, order: [['createdAt', 'DESC']] });
 
     if (pastTransaction) {
       const pastTransactionDate = pastTransaction.createdAt.getTime();
       const actualTime = new Date().getTime();
 
       if (actualTime - pastTransactionDate < 120000) {
-        Transaction.destroy({ where: { createdAt: pastTransaction.createdAt } });
-        newTransaction = await Transaction
-          .registerTransaction(req.body);
+        await models.Transaction.destroy({ where: { createdAt: pastTransaction.createdAt } });
+
+        await models.Transaction
+          .registerTransaction(req.body)
+          .then(() => {
+            res.status(200).send({ message: 'Atenção: Você está tentando realizar uma transferência duplicada.' });
+          }).catch(error => res.status(400).send(error));
       } else {
-        await Transaction
-          .registerTransaction(req.body).then((transaction) => {
-            Account.transfer(transaction);
-          });
+        await createTransfer(models, req, res);
       }
     } else {
-      await Transaction
-        .registerTransaction(req.body).then((transaction) => {
-          Account.transfer(transaction);
-        });
+      await createTransfer(models, req, res);
     }
-
-    return newTransaction.then(transaction => res.status(200).send({ ...transaction, message: 'baaaaaaaaaah' }))
-      .catch(error => res.status(400).send(error));
   },
 };

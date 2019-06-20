@@ -17,9 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
-  Transaction.registerTransaction = async (params) => {
-    await Transaction.create(params);
-  };
+  Transaction.registerTransaction = params => Transaction.create(params);
 
   return Transaction;
 };
