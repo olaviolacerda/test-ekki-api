@@ -1,4 +1,4 @@
-const { Transaction } = require('../models');
+const { Transaction, Account } = require('../models');
 
 module.exports = {
   async transfer(req, res) {
@@ -15,16 +15,19 @@ module.exports = {
         newTransaction = await Transaction
           .registerTransaction(req.body);
       } else {
-        newTransaction = await Transaction
-          .performTransfer(req.body);
+        await Transaction
+          .registerTransaction(req.body).then((transaction) => {
+            Account.transfer(transaction);
+          });
       }
     } else {
-      newTransaction = await Transaction
-        .performTransfer(req.body);
+      await Transaction
+        .registerTransaction(req.body).then((transaction) => {
+          Account.transfer(transaction);
+        });
     }
 
-
-    return newTransaction.then(transaction => res.status(200).send(transaction))
+    return newTransaction.then(transaction => res.status(200).send({ ...transaction, message: 'baaaaaaaaaah' }))
       .catch(error => res.status(400).send(error));
   },
 };

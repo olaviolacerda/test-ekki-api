@@ -48,7 +48,15 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     },
-  }, {});
+  }, {
+    scopes: {
+      withAccount() {
+        return {
+          include: sequelize.models.UserCategory,
+        };
+      },
+    },
+  });
 
   User.associate = (models) => {
     User.hasOne(models.Account, {
@@ -69,10 +77,11 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
-  User.show = async id => User.findOne({
+  User.userInfo = id => User.findOne({
     where: { id },
     include: ['account', 'contacts'],
   });
+
 
   return User;
 };

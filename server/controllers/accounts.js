@@ -1,15 +1,8 @@
 const { Op } = require('sequelize');
-const { Account, Transaction } = require('../models');
+const { Transaction } = require('../models');
 
 
 module.exports = {
-  list(req, res) {
-    return Account
-      .findAll()
-      .then(accounts => res.status(200).send(accounts))
-      .catch(error => res.status(400).send(error));
-  },
-
   extract(req, res) {
     return Transaction
       .findAll({
@@ -22,8 +15,13 @@ module.exports = {
             },
           ],
         },
-      }).then((extract) => {
-        if (!extract) return res.status(200).send({ message: 'Nenhuma transferência realizada na conta solicitada' });
+        include: ['source', 'target'],
+      }).then((transactions) => {
+        let extract = transactions;
+        if (extract.length === 0) {
+          extract = { message: 'Nenhuma transferência realizada na conta solicitada' };
+        }
+
         return res.status(200).send(extract);
       })
       .catch(error => res.status(400).send(error));

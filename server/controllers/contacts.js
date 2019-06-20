@@ -17,7 +17,13 @@ module.exports = {
 
   update(req, res) {
     return Contact
-      .findOne({ where: { id: req.params.contactId } })
+      .findOne({
+        where:
+        {
+          relatingUserId: req.body.relatingUserId,
+          relatedUserId: req.body.relatedUserId,
+        },
+      })
       .then((contact) => {
         if (!contact) {
           return res.status(404).send({

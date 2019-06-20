@@ -6,8 +6,9 @@ module.exports = {
       primaryKey: true,
       type: Sequelize.INTEGER,
     },
-    identifier: {
+    accountNumber: {
       type: Sequelize.STRING,
+      unique: true,
     },
     balance: {
       type: Sequelize.BIGINT,

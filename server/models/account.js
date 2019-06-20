@@ -1,8 +1,9 @@
+/* eslint-disable func-names */
 const SequelizeTokenify = require('sequelize-tokenify');
 
 module.exports = (sequelize, DataTypes) => {
   const Account = sequelize.define('Account', {
-    identifier: {
+    accountNumber: {
       type: DataTypes.STRING,
       unique: true,
     },
@@ -16,19 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 500,
     },
-  }, {
-    getterMethods: {
-      fullBalance() {
-        return this.balance + this.limit;
-      },
-      getBalance() {
-        return this.balance;
-      },
-    },
-  });
+  }, {});
 
   SequelizeTokenify.tokenify(Account, {
-    field: 'identifier',
+    field: 'accountNumber',
     charset: 'numeric',
   });
 
@@ -49,6 +41,23 @@ module.exports = (sequelize, DataTypes) => {
       as: 'target',
       through: 'Transaction',
     });
+  };
+
+  Account.prototype.deposit = function (amount) {
+    const newBalance = Number(this.balance) + amount;
+    this.update({ balance: newBalance });
+  };
+
+  Account.prototype.withdraw = function (amount) {
+    const balance = Number(this.balance);
+    const limit = Number(this.limit);
+    const totalBalance = balance + limit;
+
+    if (balance > amount) {
+      this.update({ balance: balance - amount });
+    } else if (totalBalance > amount) {
+      this.update({ balance: 0, limit: totalBalance - amount });
+    }
   };
 
 

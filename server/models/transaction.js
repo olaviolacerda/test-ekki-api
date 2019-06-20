@@ -21,11 +21,5 @@ module.exports = (sequelize, DataTypes) => {
     await Transaction.create(params);
   };
 
-  Transaction.performTransfer = async (params) => {
-
-  };
-
-  Transaction.validateBalance = () => true;
-
   return Transaction;
 };
