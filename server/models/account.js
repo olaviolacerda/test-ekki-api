@@ -30,16 +30,14 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'CASCADE',
     });
 
-    Account.belongsToMany(Account, {
+    Account.hasMany(models.Transaction, {
       foreignKey: 'sourceAccountId',
-      as: 'source',
-      through: 'Transaction',
+      as: 'sourceAccount',
     });
 
-    Account.belongsToMany(Account, {
+    Account.hasMany(models.Transaction, {
       foreignKey: 'targetAccountId',
-      as: 'target',
-      through: 'Transaction',
+      as: 'targetAccount',
     });
   };
 
@@ -65,6 +63,19 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     return response;
+  };
+
+  Account.prototype.getTransactions = async function () {
+    const transactions = [];
+    await this.getSourceAccount().then((sources) => {
+      sources.forEach(source => transactions.push(source.getValues()));
+    });
+
+    await this.getTargetAccount().then((targets) => {
+      targets.forEach(target => transactions.push(target.getValues()));
+    });
+
+    return transactions;
   };
 
 

@@ -30,7 +30,6 @@ module.exports = {
         model: 'Accounts',
         key: 'id',
         as: 'sourceAccountId',
-        through: 'Transaction',
       },
     },
     targetAccountId: {
@@ -40,7 +39,6 @@ module.exports = {
         model: 'Accounts',
         key: 'id',
         as: 'targetAccountId',
-        through: 'Transaction',
       },
     },
   }),

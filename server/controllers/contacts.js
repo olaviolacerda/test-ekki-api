@@ -1,4 +1,4 @@
-const { Contact, User } = require('../models');
+const { Contact } = require('../models');
 
 function create(req, res) {
   return Contact

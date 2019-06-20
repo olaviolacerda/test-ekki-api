@@ -28,10 +28,13 @@ function userAccount(req, res) {
     .findOne({ where: { id: req.params.id } })
     .then((user) => {
       user.getAccount()
-        .then(account => res.status(200)
-          .json(account.getValues()));
+        .then((account) => {
+          account.getTransactions();
+          return res.status(200)
+            .json(account.getValues());
+        });
     }).catch(error => res.status(400)
-      .json(error));
+      .json({ message: 'Conta inexistente.' }));
 }
 
 function userContacts(req, res) {

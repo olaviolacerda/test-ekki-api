@@ -14,13 +14,13 @@ module.exports = (sequelize, DataTypes) => {
   Transaction.associate = (models) => {
     Transaction.belongsTo(models.Account, {
       foreignKey: 'sourceAccountId',
-      as: 'source',
+      as: 'sourceAccount',
       onDelete: 'CASCADE',
     });
 
     Transaction.belongsTo(models.Account, {
       foreignKey: 'targetAccountId',
-      as: 'target',
+      as: 'targetAccount',
       onDelete: 'CASCADE',
     });
   };
@@ -31,6 +31,16 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Transaction.registerTransaction = params => Transaction.create(params);
+
+  Transaction.prototype.transfer = function () {
+    return new Promise((resolve, reject) => {
+      this.getSourceAccount().then((sourceAccount) => {
+        this.getTargetAccount().then((targetAccount) => {
+          resolve();
+        });
+      });
+    });
+  };
 
   return Transaction;
 };

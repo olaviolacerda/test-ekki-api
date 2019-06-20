@@ -1,37 +1,16 @@
-const { Op } = require('sequelize');
-const { Transaction, Account } = require('../models');
+const { Account } = require('../models');
 
+
+function extract(req, res) {
+  Account.findOne({
+    where: { id: req.params.accountId },
+  }).then(account => account
+    .getTransactions()
+    .then(transactions => res.status(200).json(transactions)))
+    .catch(error => res.status(400)
+      .json({ error, message: 'Nenhuma transferência encontrada na conta solicitada' }));
+}
 
 module.exports = {
-  extract(req, res) {
-    return Transaction
-      .findAll({
-        where: {
-          [Op.or]: [
-            {
-              sourceAccountId: req.params.accountId,
-            }, {
-              targetAccountId: req.params.accountId,
-            },
-          ],
-        },
-        attributes: ['transactionId', 'amount', 'createdAt'],
-        include: [{
-          model: Account,
-          as: 'target',
-          attributes: ['accountNumber', 'userId'],
-        }],
-      }).then((transactions) => {
-        let extract;
-        if (transactions.length === 0) {
-          extract = { message: 'Nenhuma transferência encontrada na conta solicitada' };
-        } else {
-          extract = transactions.map(transaction => transaction.getValues());
-        }
-        res.status(200).json(extract);
-      })
-      .catch(error => res.status(400).json(error));
-  },
-
-
+  extract,
 };
