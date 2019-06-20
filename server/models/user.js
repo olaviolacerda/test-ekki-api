@@ -58,22 +58,21 @@ module.exports = (sequelize, DataTypes) => {
 
     User.belongsToMany(User, {
       foreignKey: 'relatingUserId',
-      as: 'contacts',
+      as: 'relatingUser',
       through: 'Contact',
     });
 
     User.belongsToMany(User, {
       foreignKey: 'relatedUserId',
-      as: 'related',
+      as: 'relatedUser',
       through: 'Contact',
     });
   };
 
   User.userInfo = id => User.findOne({
     where: { id },
-    include: ['account', 'contacts'],
+    include: ['account'],
   });
-
 
   return User;
 };

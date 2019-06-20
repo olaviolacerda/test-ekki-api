@@ -13,8 +13,8 @@ module.exports = (app) => {
   app.get('/api/accounts/:accountId/extract', accountsController.extract);
   // Contacts
   app.post('/api/contacts', contactsController.create);
+  app.get('/api/contacts/:userId', contactsController.userContacts);
   app.put('/api/contacts', contactsController.update);
-  app.get('/api/contacts/:userId', contactsController.list);
   app.delete('/api/contacts/:contactId', contactsController.destroy);
   // Transactions
   app.post('/api/transactions', transactionsController.transfer);

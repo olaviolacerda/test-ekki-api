@@ -6,22 +6,22 @@ module.exports = {
       .create(req.body)
       .then((user) => {
         Account.create({ userId: user.id });
-        res.status(200).json({ user, message: 'User criado' });
+        res.status(200).json({ user, message: 'Usuário criado' });
       })
-      .catch(error => res.status(400).json(error.errors));
+      .catch(error => res.status(400).json({ error, message: 'Não foi possível cadastrar o usuário.' }));
   },
 
   list(req, res) {
     return User
       .findAll()
       .then(users => res.status(200).json(users))
-      .catch(error => res.status(400).json(error));
+      .catch(error => res.status(400).json({ error, message: 'Não há usuários cadastrados.' }));
   },
 
   login(req, res) {
     return User.findOne({ where: { cpf: req.body.cpf } })
-      .then(user => res.status(200).json(user))
-      .catch(error => res.status(400).json(error));
+      .then(user => res.status(200).json({ user }))
+      .catch(error => res.status(400).json({ error, message: 'Usuário não encontrado.' }));
   },
 
   userInfo(req, res) {
@@ -34,19 +34,10 @@ module.exports = {
           cpf: user.cpf,
           phone: user.phone,
           account: user.account,
-          contacts: user.contacts.map(contact => Object.assign(
-            {},
-            {
-              id: contact.id,
-              name: contact.name,
-              phone: contact.phone,
-              nickname: contact.Contact.nickname,
-            },
-          )),
         });
         res.status(200).json(userObj);
       })
-      .catch(error => res.status(400).json(error));
+      .catch(error => res.status(400).json({ error, message: 'Usuário não encontrado.' }));
   },
 
 };

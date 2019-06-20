@@ -6,13 +6,13 @@ module.exports = (sequelize, DataTypes) => {
   Contact.associate = (models) => {
     Contact.belongsTo(models.User, {
       foreignKey: 'relatingUserId',
-      as: 'contacts',
+      as: 'relatingUser',
       onDelete: 'CASCADE',
     });
 
     Contact.belongsTo(models.User, {
       foreignKey: 'relatedUserId',
-      as: 'related',
+      as: 'relatedUser',
       onDelete: 'CASCADE',
     });
   };
