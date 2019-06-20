@@ -69,11 +69,19 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
-
-  User.userInfo = id => User.findOne({
-    where: { id },
-    include: ['account'],
-  });
+  User.prototype.getContacts = function () {
+    return new Promise((resolve, reject) => {
+      this.getRelatingUser().then((relations) => {
+        const contacts = relations.map(relation => ({
+          contactId: relation.Contact.contactId,
+          nickname: relation.Contact.nickname,
+          realName: relation.name,
+          phone: relation.phone,
+        }));
+        resolve(contacts);
+      }).catch(err => reject(err));
+    });
+  };
 
   return User;
 };

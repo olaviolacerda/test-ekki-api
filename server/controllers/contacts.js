@@ -7,18 +7,6 @@ function create(req, res) {
     .catch(error => res.status(400).json(error));
 }
 
-function userContacts(req, res) {
-  return Contact
-    .findAll({
-      where: { relatingUserId: req.params.userId },
-      attributes: ['contactId', 'nickname'],
-      include: [{ model: User, as: 'relatedUser', attributes: ['name', 'phone'] }],
-    })
-    .then((contacts) => {
-      const contactsObj = contacts.map(contact => contact.getValues());
-      res.status(200).json(contactsObj);
-    }).catch(error => res.status(400).json(error));
-}
 
 function update(req, res) {
   return Contact
@@ -68,7 +56,6 @@ function destroy(req, res) {
 
 module.exports = {
   create,
-  userContacts,
   update,
   destroy,
 };
