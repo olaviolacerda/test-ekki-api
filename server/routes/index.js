@@ -6,6 +6,7 @@ const transactionsController = require('../controllers').transactions;
 module.exports = (app) => {
   // Users
   app.post('/api/login', usersController.login);
+  app.get('/api/users/:id', usersController.show);
   app.get('/api/users/:id/account', usersController.userAccount);
   app.get('/api/users/:id/contacts', usersController.userContacts);
   app.get('/api/users', usersController.list);

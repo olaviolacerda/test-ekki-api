@@ -77,7 +77,9 @@ module.exports = (sequelize, DataTypes) => {
           nickname: relation.Contact.nickname,
           realName: relation.name,
           phone: relation.phone,
+          userId: relation.id,
         }));
+
         resolve(contacts);
       }).catch(err => reject(err));
     });

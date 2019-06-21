@@ -12,15 +12,22 @@ function create(req, res) {
 
 function list(req, res) {
   return User
-    .findAll()
+    .findAll({ include: [{ model: Account, as: 'account', attributes: ['accountNumber'] }] })
     .then(users => res.status(200).json(users))
-    .catch(error => res.status(400).json({ error, message: 'Não há usuários cadastrados.' }));
+    .catch(err => res.status(400).json({ err, message: 'Não há usuários cadastrados.' }));
+}
+
+function show(req, res) {
+  return User
+    .findOne({ where: { id: req.params.id }, include: [{ model: Account, as: 'account', attributes: ['accountNumber'] }] })
+    .then(user => res.status(200).json(user))
+    .catch(err => res.status(400).json({ err, message: 'Usuário não encontrado.' }));
 }
 
 function login(req, res) {
   return User.findOne({ where: { cpf: req.body.cpf } })
     .then(user => res.status(200).json({ user }))
-    .catch(error => res.status(400).json({ error, message: 'Usuário não encontrado.' }));
+    .catch(err => res.status(400).json({ err, message: 'Usuário não encontrado.' }));
 }
 
 function userAccount(req, res) {
@@ -33,7 +40,7 @@ function userAccount(req, res) {
           return res.status(200)
             .json(account.getValues());
         });
-    }).catch(error => res.status(400)
+    }).catch(err => res.status(400)
       .json({ message: 'Conta inexistente.' }));
 }
 
@@ -54,4 +61,5 @@ module.exports = {
   userContacts,
   userAccount,
   login,
+  show,
 };

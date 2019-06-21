@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     Account.belongsTo(models.User, {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
+      as: 'user',
     });
 
     Account.hasMany(models.Transaction, {
@@ -67,6 +68,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Account.prototype.getTransactions = async function () {
     const transactions = [];
+
     await this.getSourceAccount().then((sources) => {
       sources.forEach(source => transactions.push(source.getValues()));
     });
