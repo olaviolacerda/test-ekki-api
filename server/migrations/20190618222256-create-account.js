@@ -11,10 +11,10 @@ module.exports = {
       unique: true,
     },
     balance: {
-      type: Sequelize.BIGINT,
+      type: Sequelize.DECIMAL(20, 2),
     },
     limit: {
-      type: Sequelize.BIGINT,
+      type: Sequelize.DECIMAL(20, 2),
     },
     createdAt: {
       allowNull: false,

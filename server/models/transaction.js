@@ -3,25 +3,38 @@ const SequelizeTokenify = require('sequelize-tokenify');
 
 module.exports = (sequelize, DataTypes) => {
   const Transaction = sequelize.define('Transaction', {
-    amount: DataTypes.BIGINT,
+    amount: DataTypes.DECIMAL(20, 2),
     transactionId: {
       type: DataTypes.INTEGER,
       unique: true,
+    },
+    status: {
+      type: DataTypes.STRING,
+      defaultValue: 'Pendente',
+      validate: {
+        isIn: [
+          [
+            'Pendente',
+            'Cancelada',
+            'Realizada',
+          ],
+        ],
+      },
     },
   }, {
 
   });
 
   Transaction.associate = (models) => {
-    Transaction.belongsTo(models.Account, {
-      foreignKey: 'sourceAccountId',
-      as: 'sourceAccount',
+    Transaction.belongsTo(models.User, {
+      foreignKey: 'fromUserId',
+      as: 'fromUser',
       onDelete: 'CASCADE',
     });
 
-    Transaction.belongsTo(models.Account, {
-      foreignKey: 'targetAccountId',
-      as: 'targetAccount',
+    Transaction.belongsTo(models.User, {
+      foreignKey: 'toUserId',
+      as: 'toUser',
       onDelete: 'CASCADE',
     });
   };
@@ -33,24 +46,31 @@ module.exports = (sequelize, DataTypes) => {
 
   Transaction.registerTransaction = params => Transaction.create(params);
 
-  Transaction.transfer = async (amount, accounts) => new Promise((resolve, reject) => {
-    const [sourceAccount, targetAccount] = accounts;
+  Transaction.prototype.transfer = async function () {
+    return new Promise((resolve, reject) => {
+      this.getFromUser().then((fromUser) => {
+        this.getToUser().then((toUser) => {
+          fromUser.getAccount().then((fromAccount) => {
+            toUser.getAccount().then((toAccount) => {
+              const withdraw = fromAccount.withdraw(Number(this.amount));
 
-
-    const withdraw = sourceAccount.withdraw(Number(amount));
-
-    if (withdraw.status) {
-      Transaction.registerTransaction(amount, sourceAccount.id, targetAccount.id);
-      targetAccount.deposit(Number(amount));
-
-      resolve({
-        account: sourceAccount,
-        message: withdraw.message,
+              if (withdraw.status) {
+                toAccount.deposit(Number(this.amount));
+                this.update({ status: 'Realizada' });
+                resolve({
+                  account: fromAccount,
+                  message: withdraw.message,
+                });
+              } else {
+                this.update({ status: 'Realizada' });
+                reject(new Error('Transferência não realizada.'));
+              }
+            });
+          });
+        });
       });
-    } else {
-      reject(new Error('Transferência não realizada.'));
-    }
-  });
+    });
+  };
 
   return Transaction;
 };

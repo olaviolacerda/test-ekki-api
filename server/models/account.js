@@ -8,12 +8,12 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
     },
     balance: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.DECIMAL(20, 2),
       allowNull: false,
       defaultValue: 1000,
     },
     limit: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.DECIMAL(20, 2),
       allowNull: false,
       defaultValue: 500,
     },
@@ -29,16 +29,6 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'userId',
       onDelete: 'CASCADE',
       as: 'user',
-    });
-
-    Account.hasMany(models.Transaction, {
-      foreignKey: 'sourceAccountId',
-      as: 'sourceAccount',
-    });
-
-    Account.hasMany(models.Transaction, {
-      foreignKey: 'targetAccountId',
-      as: 'targetAccount',
     });
   };
 

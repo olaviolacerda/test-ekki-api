@@ -13,7 +13,10 @@ module.exports = {
       unique: true,
     },
     amount: {
-      type: Sequelize.BIGINT,
+      type: Sequelize.DECIMAL(20, 2),
+    },
+    status: {
+      type: Sequelize.STRING,
     },
     createdAt: {
       allowNull: false,
@@ -23,22 +26,22 @@ module.exports = {
       allowNull: false,
       type: Sequelize.DATE,
     },
-    sourceAccountId: {
+    fromUserId: {
       type: Sequelize.INTEGER,
       onDelete: 'CASCADE',
       references: {
-        model: 'Accounts',
+        model: 'Users',
         key: 'id',
-        as: 'sourceAccountId',
+        as: 'fromUserId',
       },
     },
-    targetAccountId: {
+    toUserId: {
       type: Sequelize.INTEGER,
       onDelete: 'CASCADE',
       references: {
-        model: 'Accounts',
+        model: 'Users',
         key: 'id',
-        as: 'targetAccountId',
+        as: 'toUserId',
       },
     },
   }),
