@@ -33,23 +33,24 @@ module.exports = (sequelize, DataTypes) => {
 
   Transaction.registerTransaction = params => Transaction.create(params);
 
-  Transaction.prototype.transfer = async function () {
-    return new Promise((resolve, reject) => {
-      this.getSourceAccount()
-        .then(sourceAccount => this.getTargetAccount()
-          .then((targetAccount) => {
-            const withdraw = sourceAccount.withdraw(Number(this.amount));
+  Transaction.transfer = async (amount, accounts) => new Promise((resolve, reject) => {
+    const [sourceAccount, targetAccount] = accounts;
 
-            if (withdraw.status) targetAccount.deposit(Number(this.amount));
 
-            resolve({
-              account: sourceAccount,
-              message: withdraw.message,
-            });
-          }).catch(error => reject(error)))
-        .catch(error => reject(error));
-    });
-  };
+    const withdraw = sourceAccount.withdraw(Number(amount));
+
+    if (withdraw.status) {
+      Transaction.registerTransaction(amount, sourceAccount.id, targetAccount.id);
+      targetAccount.deposit(Number(amount));
+
+      resolve({
+        account: sourceAccount,
+        message: withdraw.message,
+      });
+    } else {
+      reject(new Error('Transferência não realizada.'));
+    }
+  });
 
   return Transaction;
 };

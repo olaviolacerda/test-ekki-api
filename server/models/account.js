@@ -66,20 +66,5 @@ module.exports = (sequelize, DataTypes) => {
     return response;
   };
 
-  Account.prototype.getTransactions = async function () {
-    const transactions = [];
-
-    await this.getSourceAccount().then((sources) => {
-      sources.forEach(source => transactions.push(source.getValues()));
-    });
-
-    await this.getTargetAccount().then((targets) => {
-      targets.forEach(target => transactions.push(target.getValues()));
-    });
-
-    return transactions;
-  };
-
-
   return Account;
 };

@@ -19,13 +19,13 @@ function list(req, res) {
 
 function show(req, res) {
   return User
-    .findOne({ where: { id: req.params.id }, include: [{ model: Account, as: 'account', attributes: ['accountNumber'] }] })
+    .findOne({ where: { id: req.params.id }, include: [{ model: Account, as: 'account', attributes: ['accountNumber', 'balance', 'limit'] }] })
     .then(user => res.status(200).json(user))
     .catch(err => res.status(400).json({ err, message: 'Usuário não encontrado.' }));
 }
 
 function login(req, res) {
-  return User.findOne({ where: { cpf: req.body.cpf } })
+  return User.findOne({ where: { cpf: req.body.cpf }, attributes: ['id'] })
     .then(user => res.status(200).json({ user }))
     .catch(err => res.status(400).json({ err, message: 'Usuário não encontrado.' }));
 }
@@ -38,7 +38,7 @@ function userAccount(req, res) {
         .then((account) => {
           account.getTransactions();
           return res.status(200)
-            .json(account.getValues());
+            .json(account.getValuesDedup());
         });
     }).catch(err => res.status(400)
       .json({ message: 'Conta inexistente.' }));
