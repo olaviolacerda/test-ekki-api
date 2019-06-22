@@ -25,7 +25,7 @@ function update(req, res) {
       return contact
         .update({
           nickname: req.body.nickname || contact.nickname,
-        })
+        }, { where: { id: contact.id } })
         .then(() => res.status(200).json(contact))
         .catch(error => res.status(400).json(error));
     })

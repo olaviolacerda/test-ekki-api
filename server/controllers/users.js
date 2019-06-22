@@ -12,7 +12,7 @@ function create(req, res) {
 
 function list(req, res) {
   return User
-    .findAll({ include: [{ model: Account, as: 'account', attributes: ['accountNumber'] }] })
+    .findAll({ attributes: ['id', 'name'] })
     .then(users => res.status(200).json(users))
     .catch(err => res.status(400).json({ err, message: 'Não há usuários cadastrados.' }));
 }
@@ -25,8 +25,8 @@ function show(req, res) {
 }
 
 function login(req, res) {
-  return User.findOne({ where: { cpf: req.body.cpf }, attributes: ['id'] })
-    .then(user => res.status(200).json({ user }))
+  return User.findOne({ where: { cpf: req.body.cpf }, include: ['account'] })
+    .then(user => res.status(200).json(user))
     .catch(err => res.status(400).json({ err, message: 'Usuário não encontrado.' }));
 }
 
@@ -35,11 +35,8 @@ function userAccount(req, res) {
     .findOne({ where: { id: req.params.id } })
     .then((user) => {
       user.getAccount()
-        .then((account) => {
-          account.getTransactions();
-          return res.status(200)
-            .json(account.getValuesDedup());
-        });
+        .then(account => res.status(200)
+          .json(account.getValuesDedup()));
     }).catch(err => res.status(400)
       .json({ message: 'Conta inexistente.' }));
 }

@@ -9,21 +9,15 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
     },
     status: {
-      type: DataTypes.STRING,
-      defaultValue: 'Pendente',
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
       validate: {
         isIn: [
-          [
-            'Pendente',
-            'Cancelada',
-            'Realizada',
-          ],
+          [0, 1, 2],
         ],
       },
     },
-  }, {
-
-  });
+  }, {});
 
   Transaction.associate = (models) => {
     Transaction.belongsTo(models.User, {
@@ -56,13 +50,16 @@ module.exports = (sequelize, DataTypes) => {
 
               if (withdraw.status) {
                 toAccount.deposit(Number(this.amount));
-                this.update({ status: 'Realizada' });
+                Transaction.update({ status: 1 }, { where: { transactionId: this.transactionId } });
+
                 resolve({
+                  amount: this.amount,
+                  user: fromUser,
                   account: fromAccount,
                   message: withdraw.message,
                 });
               } else {
-                this.update({ status: 'Realizada' });
+                Transaction.update({ status: 2 }, { where: { transactionId: this.transactionId } });
                 reject(new Error('Transferência não realizada.'));
               }
             });
