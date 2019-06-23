@@ -1,5 +1,6 @@
 /* eslint-disable func-names */
 /* eslint-disable consistent-return */
+const { Op } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
@@ -95,6 +96,31 @@ module.exports = (sequelize, DataTypes) => {
         resolve(contacts);
       }).catch(err => reject(err));
     });
+  };
+
+  User.listUsers = function (req, res) {
+    let contactsIds;
+
+    User.findOne({ where: { id: req.params.userId } })
+      .then(async (user) => {
+        console.log('DSADDDDDDDD', user);
+        await user.getRelatingUser().then((contacts) => {
+          contactsIds = contacts.map(contact => contact.id);
+        });
+      });
+    console.log('iddddddddd', contactsIds);
+
+
+    User.findAll({
+      where: { id: { [Op.not]: [contactsIds] }, attributes: ['id', 'name'] },
+    })
+      .then((users) => {
+        if (users.lenght > 0) {
+          res.status(200).json(users);
+        } else {
+          res.status(400).json({ message: 'Não há usuários cadastrados.' });
+        }
+      }).catch(err => res.status(400).json({ err, message: 'Não há usuários cadastrados.' }));
   };
 
   return User;

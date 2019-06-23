@@ -40,30 +40,42 @@ module.exports = (sequelize, DataTypes) => {
 
   Transaction.registerTransaction = params => Transaction.create(params);
 
-  Transaction.prototype.transfer = async function () {
-    return new Promise((resolve, reject) => {
-      this.getFromUser().then((fromUser) => {
-        this.getToUser().then((toUser) => {
-          fromUser.getAccount().then((fromAccount) => {
-            toUser.getAccount().then((toAccount) => {
-              const withdraw = fromAccount.withdraw(Number(this.amount));
+  Transaction.duplicatedTransaction = async function (req, res, pastTransaction) {
+    await Transaction.update({ status: 2 },
+      { where: { transactionId: pastTransaction.transactionId } })
+      .then(() => {
+        Transaction.registerTransaction(req.body).then((transaction) => {
+          Transaction.update({ status: 1 },
+            { where: { transactionId: transaction.transactionId } });
+          res.status(200).json({ transaction, message: 'Transferência duplicada, iremos manter somente a última.' });
+        });
+      });
+  };
 
-              if (withdraw.status) {
-                toAccount.deposit(Number(this.amount));
-                Transaction.update({ status: 1 }, { where: { transactionId: this.transactionId } });
-
-                resolve({
-                  amount: this.amount,
-                  user: fromUser,
-                  account: fromAccount,
-                  message: withdraw.message,
-                });
-              } else {
-                Transaction.update({ status: 2 }, { where: { transactionId: this.transactionId } });
-                reject(new Error('Transferência não realizada.'));
-              }
-            });
-          });
+  Transaction.transfer = async function ({ body }, userModel) {
+    return new Promise(async (resolve, reject) => {
+      await userModel.findOne({
+        where: { id: body.fromUserId }, include: ['account'],
+      }).then((fromUser) => {
+        userModel.findOne({
+          where: { id: body.toUserId }, include: ['account'],
+        }).then(async (toUser) => {
+          if (!toUser) {
+            reject({ message: 'Usuário destino não encontrado.' });
+          } else {
+            await fromUser.account.withdraw(Number(body.amount))
+              .then((withdraw) => {
+                toUser.account.deposit(Number(body.amount));
+                Transaction.registerTransaction({ ...body, status: 1 })
+                  .then(response => resolve({
+                    amount: response.amount,
+                    user: fromUser,
+                    message: withdraw.message,
+                  })).catch(error => reject(error));
+              }).catch((error) => {
+                reject(error);
+              });
+          }
         });
       });
     });

@@ -12,9 +12,7 @@ function create(req, res) {
 
 function list(req, res) {
   return User
-    .findAll({ attributes: ['id', 'name'] })
-    .then(users => res.status(200).json(users))
-    .catch(err => res.status(400).json({ err, message: 'Não há usuários cadastrados.' }));
+    .listUsers(req, res);
 }
 
 function show(req, res) {

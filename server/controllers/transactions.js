@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const { Transaction } = require('../models');
+const { Transaction, User } = require('../models');
 
 async function transfer(req, res) {
   const pastTransaction = await Transaction.findOne({ where: req.body, limit: 1, order: [['createdAt', 'DESC']] });
@@ -9,30 +9,16 @@ async function transfer(req, res) {
     const actualTime = new Date().getTime();
 
     if (actualTime - pastTransactionDate < 120000) {
-      await Transaction.update({ status: 2 },
-        { where: { transactionId: pastTransaction.transactionId } })
-        .then(() => {
-          Transaction.registerTransaction(req.body).then((transaction) => {
-            Transaction.update({ status: 1 },
-              { where: { transactionId: transaction.transactionId } });
-            res.status(200).json({ transaction, message: 'Transferência duplicada, iremos manter somente a última.' });
-          });
-        });
+      await Transaction.duplicatedTransaction(req, res, pastTransaction);
     } else {
-      await Transaction.registerTransaction(req.body)
-        .then(transaction => transaction.transfer()
-          .then(response => res
-            .status(200)
-            .json(response))
-          .catch(err => res.json(400).json(err)));
+      await Transaction.transfer(req, User)
+        .then(resp => res.status(200).json(resp))
+        .catch(err => res.status(400).json(err));
     }
   } else {
-    await Transaction.registerTransaction(req.body)
-      .then(transaction => transaction.transfer()
-        .then(response => res
-          .status(200)
-          .json(response))
-        .catch(err => res.json(400).json(err)));
+    await Transaction.transfer(req, User)
+      .then(resp => res.status(200).json(resp))
+      .catch(err => res.status(400).json(err));
   }
 }
 
@@ -51,9 +37,16 @@ async function extract(req, res) {
       'fromUser', 'toUser',
     ],
   }).then((transactions) => {
-    const formattedTransactions = transactions.map((transaction) => {
-      const addition = transaction.toUserId == req.params.userId;
-      return { ...transaction.getValues(), addition };
+    const formattedTransactions = transactions.filter((transaction) => {
+      if (!(transaction.status == 2 && transaction.toUserId == req.params.userId)) {
+        return transaction;
+      }
+    }).map((newTransactions) => {
+      const addition = newTransactions.toUserId == req.params.userId;
+      return {
+        ...newTransactions.getValues(),
+        addition,
+      };
     });
     res.status(200)
       .json(formattedTransactions);

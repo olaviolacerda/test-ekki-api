@@ -33,27 +33,36 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   Account.prototype.deposit = function (amount) {
-    const newBalance = Number(this.balance) + amount;
-    this.update({ balance: newBalance });
+    const { limit } = this;
+    const newLimit = Number(limit) < 500 ? Number(limit) + amount : Number(limit);
+    const limitMax = 500;
+
+    if (newLimit > limitMax) {
+      const newBalance = Number(newLimit) - limitMax;
+      this.update({ balance: newBalance, limit: limitMax });
+    } else {
+      this.update({ limit: newLimit });
+    }
   };
 
 
-  Account.prototype.withdraw = function (amount) {
+  Account.prototype.withdraw = async function (amount) {
     const balance = Number(this.balance);
     const limit = Number(this.limit);
     const totalBalance = balance + limit;
 
-    let response = { status: false, account: this, message: 'Saldo insuficiente.' };
 
-    if (amount < balance) {
-      this.update({ balance: balance - amount });
-      response = { status: true, account: this, message: 'Transferência realizada.' };
-    } else if (amount < totalBalance) {
-      this.update({ balance: 0, limit: totalBalance - amount });
-      response = { status: true, account: this, message: 'Transferência realizada.' };
-    }
-
-    return response;
+    return new Promise((resolve, reject) => {
+      if (amount < balance) {
+        this.update({ balance: balance - amount });
+        resolve({ status: true, account: this, message: 'Transferência realizada.' });
+      } else if (amount < totalBalance) {
+        this.update({ balance: 0, limit: totalBalance - amount });
+        resolve({ status: true, account: this, message: 'Transferência realizada.' });
+      } else {
+        reject({ status: false, account: this, message: 'Saldo insuficiente.' });
+      }
+    });
   };
 
   return Account;
