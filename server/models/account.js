@@ -34,13 +34,15 @@ module.exports = (sequelize, DataTypes) => {
 
   Account.prototype.deposit = function (amount) {
     const { limit } = this;
-    const newLimit = Number(limit) < 500 ? Number(limit) + amount : Number(limit);
+    const newLimit = Number(limit) <= 500 ? Number(limit) + amount : Number(limit);
     const limitMax = 500;
 
     if (newLimit > limitMax) {
-      const newBalance = Number(newLimit) - limitMax;
+      console.log('to aqui a');
+      const newBalance = (Number(newLimit) + Number(this.balance)) - limitMax;
       this.update({ balance: newBalance, limit: limitMax });
     } else {
+      console.log('to aqui b');
       this.update({ limit: newLimit });
     }
   };

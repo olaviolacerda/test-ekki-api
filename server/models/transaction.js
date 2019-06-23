@@ -52,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
       });
   };
 
-  Transaction.transfer = async function ({ body }, userModel) {
+  Transaction.transfer = async function ({ body, io }, userModel) {
     return new Promise(async (resolve, reject) => {
       await userModel.findOne({
         where: { id: body.fromUserId }, include: ['account'],
@@ -65,13 +65,19 @@ module.exports = (sequelize, DataTypes) => {
           } else {
             await fromUser.account.withdraw(Number(body.amount))
               .then((withdraw) => {
+                io.emit(`account-${fromUser.cpf}`, fromUser.account);
                 toUser.account.deposit(Number(body.amount));
+                io.emit(`account-${toUser.cpf}`, toUser.account);
                 Transaction.registerTransaction({ ...body, status: 1 })
-                  .then(response => resolve({
-                    amount: response.amount,
-                    user: fromUser,
-                    message: withdraw.message,
-                  })).catch(error => reject(error));
+                  .then((response) => {
+                    io.emit(`transaction-${toUser.cpf}`, response);
+                    io.emit(`transaction-${fromUser.cpf}`, response);
+                    resolve({
+                      amount: response.amount,
+                      user: fromUser,
+                      message: withdraw.message,
+                    });
+                  }).catch(error => reject(error));
               }).catch((error) => {
                 reject(error);
               });

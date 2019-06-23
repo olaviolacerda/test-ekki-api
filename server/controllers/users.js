@@ -12,7 +12,9 @@ function create(req, res) {
 
 function list(req, res) {
   return User
-    .listUsers(req, res);
+    .findAll({ attributes: ['id', 'name', 'phone'] })
+    .then(users => res.status(200).json(users))
+    .catch(err => res.status(400).json({ err, message: 'Nenhum usuário encontrado' }));
 }
 
 function show(req, res) {
