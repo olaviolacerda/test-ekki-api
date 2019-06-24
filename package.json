@@ -5,7 +5,8 @@
   "license": "MIT",
   "author": "Olavio Lacerda",
   "scripts": {
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "prod": "node app.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
