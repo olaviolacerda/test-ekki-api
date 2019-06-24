@@ -7,5 +7,14 @@
     "port": 5432,
     "protocol": "postgres",
     "dialect": "postgres"
+  },
+  "production": {
+    "username": "jfylhpwmwpbgys",
+    "password": "b1c9e3ad1bac49040b1b58d323d14a5b3e34631838dadca3f30305d48ab3f8dc",
+    "database": "damg8tu3p4mfku",
+    "host": "ec2-50-17-231-192.compute-1.amazonaws.com",
+    "port": 5432,
+    "protocol": "postgres",
+    "dialect": "postgres"
   }
 }
