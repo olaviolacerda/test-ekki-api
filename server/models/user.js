@@ -103,12 +103,10 @@ module.exports = (sequelize, DataTypes) => {
 
     User.findOne({ where: { id: req.params.userId } })
       .then(async (user) => {
-        console.log('DSADDDDDDDD', user);
         await user.getRelatingUser().then((contacts) => {
           contactsIds = contacts.map(contact => contact.id);
         });
       });
-    console.log('iddddddddd', contactsIds);
 
 
     User.findAll({

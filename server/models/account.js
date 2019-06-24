@@ -38,11 +38,9 @@ module.exports = (sequelize, DataTypes) => {
     const limitMax = 500;
 
     if (newLimit > limitMax) {
-      console.log('to aqui a');
       const newBalance = (Number(newLimit) + Number(this.balance)) - limitMax;
       this.update({ balance: newBalance, limit: limitMax });
     } else {
-      console.log('to aqui b');
       this.update({ limit: newLimit });
     }
   };

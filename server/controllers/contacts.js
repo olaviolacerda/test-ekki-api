@@ -3,7 +3,7 @@ const { Contact } = require('../models');
 function create(req, res) {
   return Contact
     .addContact(req.body)
-    .then(contact => res.status(200).json(contact))
+    .then(contact => res.status(200).json({ message: 'Contato adicionado com sucesso.' }))
     .catch(error => res.status(400).json(error));
 }
 
@@ -26,7 +26,7 @@ function update(req, res) {
         .update({
           nickname: req.body.nickname || contact.nickname,
         }, { where: { id: contact.id } })
-        .then(() => res.status(200).json(contact))
+        .then(() => res.status(200).json({ message: 'Contato atualizado com sucesso.' }))
         .catch(error => res.status(400).json(error));
     })
     .catch(error => res.status(400).json(error));
@@ -48,7 +48,7 @@ function destroy(req, res) {
       }
       return contact
         .destroy()
-        .then(() => res.status(200).json(contact))
+        .then(() => res.status(200).json({ message: 'Contato removido.' }))
         .catch(error => res.status(400).json(error));
     })
     .catch(error => res.status(400).json(error));
