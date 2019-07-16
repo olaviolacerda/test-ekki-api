@@ -6,7 +6,10 @@
   "author": "Olavio Lacerda",
   "scripts": {
     "dev": "nodemon app.js",
-    "prod": "node app.js"
+    "prod": "node app.js",
+    "pretest": "NODE_ENV=test sequelize db:migrate",
+    "test": "NODE_ENV=test jest",
+    "posttest": "NODE_ENV=test sequelize db:migrate:undo:all"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -25,6 +28,11 @@
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.17.3",
-    "nodemon": "^1.19.1"
+    "factory-girl": "^5.0.4",
+    "faker": "^4.1.0",
+    "jest": "^24.8.0",
+    "nodemon": "^1.19.1",
+    "sqlite3": "^4.0.9",
+    "supertest": "^4.0.2"
   }
 }

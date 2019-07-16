@@ -16,7 +16,7 @@ module.exports = {
       type: Sequelize.DECIMAL(20, 2),
     },
     status: {
-      type: Sequelize.STRING,
+      type: Sequelize.INTEGER,
     },
     created_at: {
       allowNull: false,
