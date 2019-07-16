@@ -1,48 +1,48 @@
 
 
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('Contacts', {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('contacts', {
     id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: Sequelize.INTEGER,
     },
-    contactId: {
+    contact_id: {
       type: Sequelize.STRING,
       unique: true,
     },
     nickname: {
       type: Sequelize.STRING,
     },
-    createdAt: {
+    created_at: {
       allowNull: false,
       type: Sequelize.DATE,
     },
-    updatedAt: {
+    updated_at: {
       allowNull: false,
       type: Sequelize.DATE,
     },
-    relatingUserId: {
+    relating_user_id: {
       type: Sequelize.INTEGER,
       onDelete: 'CASCADE',
       references: {
-        model: 'Users',
+        model: 'users',
         key: 'id',
         as: 'relatingUserId',
         through: 'Contact',
       },
     },
-    relatedUserId: {
+    related_user_id: {
       type: Sequelize.INTEGER,
       onDelete: 'CASCADE',
       references: {
-        model: 'Users',
+        model: 'users',
         key: 'id',
         as: 'relatedUserId',
         through: 'Contact',
       },
     },
   }),
-  down: queryInterface => queryInterface.dropTable('Contacts'),
+  down: queryInterface => queryInterface.dropTable('contacts'),
 };

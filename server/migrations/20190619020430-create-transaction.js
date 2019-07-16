@@ -1,14 +1,14 @@
 
 
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('Transactions', {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('transactions', {
     id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: Sequelize.INTEGER,
     },
-    transactionId: {
+    transaction_id: {
       type: Sequelize.STRING,
       unique: true,
     },
@@ -18,32 +18,32 @@ module.exports = {
     status: {
       type: Sequelize.STRING,
     },
-    createdAt: {
+    created_at: {
       allowNull: false,
       type: Sequelize.DATE,
     },
-    updatedAt: {
+    updated_at: {
       allowNull: false,
       type: Sequelize.DATE,
     },
-    fromUserId: {
+    from_user_id: {
       type: Sequelize.INTEGER,
       onDelete: 'CASCADE',
       references: {
-        model: 'Users',
+        model: 'users',
         key: 'id',
         as: 'fromUserId',
       },
     },
-    toUserId: {
+    to_user_id: {
       type: Sequelize.INTEGER,
       onDelete: 'CASCADE',
       references: {
-        model: 'Users',
+        model: 'users',
         key: 'id',
         as: 'toUserId',
       },
     },
   }),
-  down: queryInterface => queryInterface.dropTable('Transactions'),
+  down: queryInterface => queryInterface.dropTable('transactions'),
 };

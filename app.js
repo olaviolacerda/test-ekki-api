@@ -24,5 +24,5 @@ require('./server/routes')(app);
 
 
 server.listen(app.get('port'), () => {
-  console.log(`Ekki API is running on port ${app.get('port')}`);
+  console.log(`Server is running at port ${app.get('port')}`);
 });

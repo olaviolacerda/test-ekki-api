@@ -1,12 +1,12 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('Accounts', {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('accounts', {
     id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: Sequelize.INTEGER,
     },
-    accountNumber: {
+    account_number: {
       type: Sequelize.STRING,
       unique: true,
     },
@@ -16,23 +16,23 @@ module.exports = {
     limit: {
       type: Sequelize.DECIMAL(20, 2),
     },
-    createdAt: {
+    created_at: {
       allowNull: false,
       type: Sequelize.DATE,
     },
-    updatedAt: {
+    updated_at: {
       allowNull: false,
       type: Sequelize.DATE,
     },
-    userId: {
+    user_id: {
       type: Sequelize.INTEGER,
       onDelete: 'CASCADE',
       references: {
-        model: 'Users',
+        model: 'users',
         key: 'id',
         as: 'userId',
       },
     },
   }),
-  down: queryInterface => queryInterface.dropTable('Accounts'),
+  down: queryInterface => queryInterface.dropTable('accounts'),
 };
