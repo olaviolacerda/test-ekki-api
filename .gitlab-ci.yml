@@ -1,12 +1,18 @@
-# Node docker image on which this would be run
-image: node:8.10.0
+image: node:10.16.0
 
 cache:
   paths:
     - node_modules/
 
 stages:
+  - test
   - deploy_production
+
+Test:
+  stage: test
+  script:
+    - yarn install
+    - yarn test
 
 Production:
   image: ruby:latest
@@ -15,6 +21,6 @@ Production:
   stage: deploy_production
   script:
     - apt-get update -qy
-    - apt-get install -y ruby-dev
+    - apt-get install -y ruby-dev yarn
     - gem install dpl
     - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_API_KEY
