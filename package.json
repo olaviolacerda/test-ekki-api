@@ -18,7 +18,7 @@
     "sequelize-cli": "^5.5.0",
     "sequelize-tokenify": "^0.2.1",
     "sequelize-values": "^1.1.0",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.4.0"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
